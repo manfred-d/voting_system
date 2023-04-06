@@ -18,10 +18,6 @@ const adminSchema = mongoose.Schema(
       type: Number,
       required: [true, "Work ID"],
     },
-    avatar: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: [true, "Enter Email"],
