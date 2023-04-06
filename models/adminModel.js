@@ -33,7 +33,7 @@ const adminSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    collection: "admins",
   }
 );
 
