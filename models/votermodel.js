@@ -1,0 +1,39 @@
+const Schema = require('mongoose').Schema;
+
+
+const VoterSchema = new Schema({
+    fullNames: {
+        type: String,
+        required: [true, 'Enter full names']
+    },
+    nationalID: {
+        type: Number,
+        required: [true, 'Enter national ID'],
+        unique: true,
+        minLength: [8, 'National ID must be 8 digits'],
+    },
+    residence: {
+        type: String,
+        required: [true, 'Enter residence']
+    },
+    phoneNumber: {
+        type: Number,
+        required: [true, 'Enter phone number'],
+        unique: true,
+        minLength: [10, 'Phone number must be 10 digits'],
+    },
+    email: {
+        type: String,
+        required: [true, 'Enter email'],
+        unique: true
+    },
+    password: {
+        type: String,
+        required: [true, 'Enter password'],
+        minLength: [8, 'Password must be 8 characters long']
+    },
+});
+
+
+const Voter = mongoose.model('Voter', VoterSchema);
+module.exports = Voter;
