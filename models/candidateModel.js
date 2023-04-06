@@ -33,7 +33,7 @@ const candidateSchema = mongoose.Schema(
     },
   },
   {
-    timestamps: true,
+    collection: "candidates",
   }
 );
 
