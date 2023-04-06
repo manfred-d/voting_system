@@ -1,11 +1,16 @@
+const errorHandler = (err, req, res, next) => {
+    console.log(err.stack);
 
-//errorHandler
-
-module.exports = function (err, req, res, next) {
-    console.log(err);
-    res.status(500).json({
-        success: false,
-        error: "Server Error",
-    });
+    switch (err.status) {
+        case (err.status):
+            res.status(err.status).json({ error: err.message });
+            break;
+        default:
+            res.status(500).json({ error: 'Internal Server Error' });
+            break;
+    }
 }
-    
+
+
+module.exports = errorHandler;
+
