@@ -4,14 +4,14 @@ const dotenv = require('dotenv').config();
 const port = process.env.PORT || 5000;
 const databaseInstance = require('./config/db');
 const errorHandler = require('./helpers/errorHandler');
-
+const cors = require('cors');
 const app = express();
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(errorHandler);
-
+app.use(cors())
 
 //routes
 //dummy route
@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
     })
 });
 
+app.use('/auth/admin', require('./routes/adminRouter'));
 //database connection
 databaseInstance();
 
