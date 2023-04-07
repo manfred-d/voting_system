@@ -2,13 +2,9 @@ const mongoose = require("mongoose");
 
 const candidateSchema = mongoose.Schema(
   {
-    firstName: {
+    fullNames: {
       type: String,
       required: [true, "Please Enter your first name"],
-    },
-    lastName: {
-      type: String,
-      required: [true, "Please Enter your last name"],
     },
     candidateID: {
       type: Number,
@@ -25,10 +21,6 @@ const candidateSchema = mongoose.Schema(
     },
     partyID: {
       type: Number,
-      required: true,
-    },
-    avatar: {
-      type: String,
       required: true,
     },
   },
