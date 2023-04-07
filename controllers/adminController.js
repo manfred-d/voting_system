@@ -19,10 +19,6 @@ const validateInput = [
     }),
 ];
 
-
-
-
-
 const registerAdmin = expressAsyncHandler(async (req, res) => {
     const {
         lastName,
