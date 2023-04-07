@@ -25,6 +25,10 @@ const registerCandidate = catchAsync(async (req, res, next) => {
             const token = jwt.sign({ id: existingAdmin._id }, process.env.JWT_SECRET, {
                 expiresIn: '1d'
             });
+            const existingCandidate = await Candidate.findOne({ candidateID });
+            if (existingCandidate) {
+                return next(new AppError('Candidate already exists', 400));
+            }
             const newCandidate = await Candidate.create({
                 fullNames,
                 candidateID,
