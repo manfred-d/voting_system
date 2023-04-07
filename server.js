@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth/admin', require('./routes/adminRouter'));
+app.use('/auth/candidate', require('./routes/candidateRoute'));
 //database connection
 databaseInstance();
 
