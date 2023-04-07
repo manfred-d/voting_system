@@ -1,7 +1,27 @@
 const Admin = require('../models/adminModel');
 const bcrypt = require('bcryptjs');
+const { body, validationResult } = require('express-validator');
 const expressAsyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
+const { catchAsync } = require('../utils/catchAsync');
+const { AppError } = require('../utils/appError');
+
+//Input Validator
+const validateInput = [
+    body('workID').trim().notEmpty().withMessage('Work ID is required'),
+    body('password').trim().notEmpty().withMessage('Password is required'),
+    catchAsync(async (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return next(new AppError(errors.array()[0], msg, 400))
+        }
+        next();
+    }),
+];
+
+
+
+
 
 const registerAdmin = expressAsyncHandler(async (req, res) => {
     const {
@@ -56,48 +76,37 @@ const registerAdmin = expressAsyncHandler(async (req, res) => {
     }
 });
 
-
-const loginAdmin = expressAsyncHandler(async (req, res) => {
+const loginAdmin = catchAsync(async (req, res, next) => {
     const { workID, password } = req.body;
-    try {
-        if (!workID || !password) {
-            res.status(400);
-            throw new Error('Please provide your work ID and password');
-        }
-        const existingAdmin = await Admin.findOne({ workID });
-        if (!existingAdmin) {
-            res.status(403);
-            throw new Error('Credentials not found, are you registered?');
-        }
-        const isMatch = await bcrypt.compare(password, existingAdmin.password);
-        if (!isMatch) {
-            res.status(403);
-            throw new Error('Access Denied, check your password and try again');
-        }
-        const token = jwt.sign({ id: existingAdmin._id }, process.env.JWT_SECRET, {
-            expiresIn: '1d'
-        });
-        if (existingAdmin) {
-            res.status(200);
-            res.json({
-                _id: existingAdmin.id,
+    const existingAdmin = await Admin.findOne({ workID });
+
+    if (!existingAdmin) {
+        return next(new AppError('Invalid credentials', 401));
+    }
+
+    const isMatch = await bcrypt.compare(password, existingAdmin.password);
+    if (!isMatch) {
+        return next(new AppError('Invalid credentials', 401));
+    }
+
+    const token = jwt.sign({ id: existingAdmin._id }, process.env.JWT_SECRET, {
+        expiresIn: '1d',
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            admin: {
+                id: existingAdmin.id,
                 lastName: existingAdmin.lastName,
                 firstName: existingAdmin.firstName,
                 nationalID: existingAdmin.nationalID,
                 workID: existingAdmin.workID,
                 email: existingAdmin.email,
-                token
-            });
-        } else {
-            res.status(403);
-            throw new Error('Validation error, please contact IT support');
-        }
-    } catch (error) {
-        res.status(500);
-        throw new Error(error, error.message);
-        res.json('Could not validate your credentials, please try again')
-    }
+            },
+            token,
+        },
+    });
 });
-
 
 module.exports = { registerAdmin, loginAdmin };
