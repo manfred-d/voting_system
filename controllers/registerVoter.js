@@ -1,5 +1,5 @@
 const express = require('express');
-const Voter = require('../models/voterModel');
+const Voter = require('../models/votermodel');
 const jwt = require('jsonwebtoken');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
@@ -10,7 +10,7 @@ const registerVoter = catchAsync(async (req, res, next) => {
     try {
         const { workID, password, fullNames, nationalID, residence, phoneNumber, email, Password } = req.body;
 
-        if (!workID || !password || !fullNames || nationalID || !residence || !phoneNumber || !email || !password) {
+        if (!workID || !password || !fullNames || !nationalID || !residence || !phoneNumber || !email || !Password) {
             return next(new AppError('fielsa cannot be empty'));
 
         }
@@ -27,11 +27,14 @@ const registerVoter = catchAsync(async (req, res, next) => {
             if (existingVoter) {
                 return next(new AppError('Voter already exists', 400));
             }
+            const salt = await bcrypt.genSaltSync(8);
+            const hashedPassword = await bcrypt.hashSync(Password, salt);
             const newVoter = await Voter.create({
                 fullNames,
                 nationalID,
                 residence,
                 phoneNumber,
+                Password: hashedPassword,
                 email
             });
             if (newVoter) {
@@ -42,6 +45,7 @@ const registerVoter = catchAsync(async (req, res, next) => {
                     residence: newVoter.residence,
                     phoneNumber: newVoter.phoneNumber,
                     email: newVoter.email,
+                    Password: hashedPassword,
                     token
                 });
             }
@@ -52,7 +56,7 @@ const registerVoter = catchAsync(async (req, res, next) => {
        
 
     } catch (error) {
-        return next(new AppError(error, 500));
+        return next(new AppError(error.message, 500));
     }
 });
 

@@ -24,9 +24,8 @@ app.get('/', (req, res) => {
 
 app.use('/auth/admin', require('./routes/adminRouter'));
 app.use('/auth/candidate', require('./routes/candidateRoute'));
+app.use('/auth/voter', require('./routes/voterRoutes'));
 
-// voter routes
-app.use('/auth/voter', require('./routes/voterRoutes'))
 //database connection
 databaseInstance();
 
