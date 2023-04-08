@@ -1,5 +1,5 @@
 const Schema = require('mongoose').Schema;
-
+const mongoose = require('mongoose')
 
 const VoterSchema = new Schema({
     fullNames: {
