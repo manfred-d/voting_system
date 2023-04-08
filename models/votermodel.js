@@ -27,7 +27,7 @@ const VoterSchema = new Schema({
         required: [true, 'Enter email'],
         unique: true
     },
-    password: {
+    Password: {
         type: String,
         required: [true, 'Enter password'],
         minLength: [8, 'Password must be 8 characters long']
