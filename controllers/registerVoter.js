@@ -1,5 +1,6 @@
 const express = require('express');
 const Voter = require('../models/votermodel');
+const Voter = require('../models/votermodel');
 const jwt = require('jsonwebtoken');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
@@ -11,13 +12,13 @@ const registerVoter = catchAsync(async (req, res, next) => {
         const { workID, password, fullNames, nationalID, residence, phoneNumber, email, Password } = req.body;
 
         if (!workID || !password || !fullNames || !nationalID || !residence || !phoneNumber || !email || !Password) {
-            return next(new AppError('fielsa cannot be empty'));
+            return next(new AppError('fields cannot be empty'));
 
         }
         const existingAdmin = await Admin.findOne({ workID });
         if (!existingAdmin) {
             return next(new AppError('Admin not found', 404));
-            throw new Error('Only admins can register candidates');
+            throw new Error('Only admins can register voter');
         }
         if (existingAdmin && await bcrypt.compare(password, existingAdmin.password)) {
             const token = jwt.sign({ id: existingAdmin._id }, process.env.JWT_SECRET, {
